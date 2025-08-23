@@ -1,0 +1,13 @@
+{
+  "meta": { "name": "hello-world", "version": "0.1" },
+  "imports": [],
+  "nodes": [
+    {
+      "id": "print1",
+      "type": "Print",
+      "inputs": [{ "name": "text", "type": "string" }],
+      "params": { "text": "Hello World" }
+    }
+  ],
+  "edges": []
+}

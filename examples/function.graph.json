@@ -1,0 +1,18 @@
+{
+  "meta": { "name": "function-example", "version": "0.1" },
+  "imports": [],
+  "nodes": [
+    { "id": "c1", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 3 } },
+    { "id": "c2", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 4 } },
+    { "id": "add1", "type": "Add", "outputs": [{ "name": "out", "type": "int" }], "inputs": [{ "name": "a", "type": "int" }, { "name": "b", "type": "int" }] },
+    { "id": "p1", "type": "Print", "inputs": [{ "name": "text", "type": "int" }] }
+  ],
+  "edges": [
+    { "fromNode": "c1", "fromPort": "out", "toNode": "add1", "toPort": "a" },
+    { "fromNode": "c2", "fromPort": "out", "toNode": "add1", "toPort": "b" },
+    { "fromNode": "add1", "fromPort": "out", "toNode": "p1", "toPort": "text" }
+  ],
+  "functions": [
+    { "name": "mainFunc", "signature": "int main()", "graph": { "nodes": [], "edges": [] } }
+  ]
+}

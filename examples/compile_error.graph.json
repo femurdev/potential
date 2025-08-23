@@ -1,0 +1,11 @@
+{
+  "meta": { "name": "compile-error-example", "version": "0.1" },
+  "imports": [],
+  "nodes": [
+    { "id": "g1", "type": "VarGet", "outputs": [{ "name": "out", "type": "int" }], "params": { "name": "missingVar" } },
+    { "id": "p1", "type": "Print", "inputs": [{ "name": "text", "type": "int" }] }
+  ],
+  "edges": [
+    { "fromNode": "g1", "fromPort": "out", "toNode": "p1", "toPort": "text" }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "meta": { "name": "function-call-example", "version": "0.1" },
+  "imports": ["<iostream>"],
+  "nodes": [
+    { "id": "c1", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 5 } },
+    { "id": "c2", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 7 } },
+    { "id": "call1", "type": "CallFunction", "inputs": [{ "name": "a", "type": "int" }, { "name": "b", "type": "int" }], "params": { "functionName": "addTwo" }, "outputs": [{ "name": "out", "type": "int" }] },
+    { "id": "print1", "type": "Print", "inputs": [{ "name": "text", "type": "int" }] }
+  ],
+  "edges": [
+    { "fromNode": "c1", "fromPort": "out", "toNode": "call1", "toPort": "a" },
+    { "fromNode": "c2", "fromPort": "out", "toNode": "call1", "toPort": "b" },
+    { "fromNode": "call1", "fromPort": "out", "toNode": "print1", "toPort": "text" }
+  ],
+  "functions": [
+    {
+      "name": "addTwo",
+      "params": [ { "name": "a", "type": "int" }, { "name": "b", "type": "int" } ],
+      "returns": { "type": "int" },
+      "graph": {
+        "nodes": [
+          { "id": "arg_a", "type": "Arg", "outputs": [{ "name": "out", "type": "int" }], "params": { "name": "a", "type": "int" } },
+          { "id": "arg_b", "type": "Arg", "outputs": [{ "name": "out", "type": "int" }], "params": { "name": "b", "type": "int" } },
+          { "id": "add", "type": "Add", "inputs": [{ "name": "a", "type": "int" }, { "name": "b", "type": "int" }], "outputs": [{ "name": "out", "type": "int" }] },
+          { "id": "ret", "type": "Return", "inputs": [{ "name": "value", "type": "int" }] }
+        ],
+        "edges": [
+          { "fromNode": "arg_a", "fromPort": "out", "toNode": "add", "toPort": "a" },
+          { "fromNode": "arg_b", "fromPort": "out", "toNode": "add", "toPort": "b" },
+          { "fromNode": "add", "fromPort": "out", "toNode": "ret", "toPort": "value" }
+        ]
+      }
+    }
+  ]
+}

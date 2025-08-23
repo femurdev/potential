@@ -1,0 +1,16 @@
+{
+  "name": "graph-to-cpp",
+  "version": "0.2.0",
+  "main": "dist/emitter/cppEmitter.js",
+  "scripts": {
+    "build": "tsc",
+    "emit": "node dist/emitter/cppEmitter.js examples/add.graph.json out.cpp",
+    "emit:ts": "ts-node src/emitter/cppEmitter.ts examples/add.graph.json out.cpp",
+    "validate": "node dist/validator/graphValidator.js examples/add.graph.json",
+    "run-js": "node dist/runner/jsRunner.js examples/add.graph.json"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "ts-node": "^10.9.1"
+  }
+}

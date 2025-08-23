@@ -1,0 +1,15 @@
+{
+  "meta": { "name": "add-example", "version": "0.1" },
+  "imports": ["<iostream>"],
+  "nodes": [
+    { "id": "n1", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 1 } },
+    { "id": "n2", "type": "Const", "outputs": [{ "name": "out", "type": "int" }], "params": { "value": 2 } },
+    { "id": "n3", "type": "Add", "outputs": [{ "name": "out", "type": "int" }], "inputs": [{ "name": "a", "type": "int" }, { "name": "b", "type": "int" }] },
+    { "id": "n4", "type": "Print", "inputs": [{ "name": "text", "type": "int" }] }
+  ],
+  "edges": [
+    { "fromNode": "n1", "fromPort": "out", "toNode": "n3", "toPort": "a" },
+    { "fromNode": "n2", "fromPort": "out", "toNode": "n3", "toPort": "b" },
+    { "fromNode": "n3", "fromPort": "out", "toNode": "n4", "toPort": "text" }
+  ]
+}
