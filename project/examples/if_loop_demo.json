@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    { "id": "n1", "type": "Literal", "properties": { "value": 1 } },
+    { "id": "n2", "type": "Literal", "properties": { "value": 2 } },
+    { "id": "n3", "type": "Literal", "properties": { "value": 3 } },
+    { "id": "sum", "type": "Add", "inputs": ["n1", "n2"] },
+    { "id": "sum2", "type": "Add", "inputs": ["sum", "n3"] },
+    { "id": "p", "type": "Print", "inputs": ["sum2"] }
+  ],
+  "edges": [],
+  "imports": []
+}

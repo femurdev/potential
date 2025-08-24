@@ -7,12 +7,13 @@
     "name": { "type": "string" },
     "nodeType": { "type": "string" },
     "include": { "type": "string" },
-    "signature": { "type": "string" },
+    "function": { "type": "string" },
+    "returnType": { "type": "string" },
     "params": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "kind"],
+        "required": ["name", "type"],
         "properties": {
           "name": { "type": "string" },
           "type": { "type": "string" },
@@ -25,6 +26,11 @@
       "type": "object",
       "properties": { "type": { "type": "string" } }
     },
-    "link": { "type": "string" }
+    "supportedTargets": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["native", "wasm"] }
+    },
+    "linkerFlags": { "type": "string" },
+    "externC": { "type": "boolean" }
   }
 }

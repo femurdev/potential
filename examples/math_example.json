@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    { "id": "n1", "type": "Literal", "props": { "value": 3.1415 } },
+    { "id": "n2", "type": "Print", "props": { "text": "Pi approx:" } },
+    { "id": "n3", "type": "Print", "props": { "text": "(value printed separately)" } }
+  ],
+  "edges": [],
+  "imports": ["<iostream>"]
+}

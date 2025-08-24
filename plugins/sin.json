@@ -2,7 +2,7 @@
   "name": "sin",
   "nodeType": "Lib_sin",
   "include": "<cmath>",
-  "signature": "double sin(double)",
+  "function": "sin",
   "params": [
     { "name": "x", "type": "double", "kind": "input" }
   ],

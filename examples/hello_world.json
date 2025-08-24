@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "Print",
+      "props": {
+        "text": "Hello, World!"
+      }
+    }
+  ],
+  "edges": [],
+  "imports": ["<iostream>"]
+}

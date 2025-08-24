@@ -1,0 +1,46 @@
+{
+  "mappings": [
+    {
+      "node_id": "p_x",
+      "function": "addOne",
+      "start_line": 4,
+      "end_line": 3
+    },
+    {
+      "node_id": "literal1",
+      "function": "addOne",
+      "start_line": 4,
+      "end_line": 4
+    },
+    {
+      "node_id": "n_add",
+      "function": "addOne",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "node_id": "addOne::return",
+      "function": "addOne",
+      "start_line": 6,
+      "end_line": 6
+    },
+    {
+      "node_id": "n1",
+      "function": null,
+      "start_line": 10,
+      "end_line": 10
+    },
+    {
+      "node_id": "n2",
+      "function": null,
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "node_id": "n3",
+      "function": null,
+      "start_line": 12,
+      "end_line": 12
+    }
+  ]
+}

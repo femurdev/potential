@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "Literal",
+      "properties": {
+        "value": 3
+      },
+      "outputs": [
+        "n3"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "Literal",
+      "properties": {
+        "value": 4
+      },
+      "outputs": [
+        "n3"
+      ]
+    },
+    {
+      "id": "n3",
+      "type": "Add",
+      "inputs": [
+        "n1",
+        "n2"
+      ],
+      "outputs": [
+        "n4"
+      ]
+    },
+    {
+      "id": "n4",
+      "type": "Print",
+      "inputs": [
+        "n3"
+      ],
+      "outputs": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "n1",
+      "to": "n3"
+    },
+    {
+      "from": "n2",
+      "to": "n3"
+    },
+    {
+      "from": "n3",
+      "to": "n4"
+    }
+  ],
+  "imports": []
+}

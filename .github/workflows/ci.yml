@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate plugin manifests
+        run: node compiler/plugin_validator.js || true
+
+      - name: Validate IR examples
+        run: |
+          node compiler/validator.js examples/hello_world.json
+          node compiler/validator.js examples/function_simple.json
+
+      - name: Emit, compile and run examples
+        run: |
+          python3 scripts/test_emit_compile.py examples/hello_world.json
+          python3 scripts/test_emit_compile.py examples/function_simple.json

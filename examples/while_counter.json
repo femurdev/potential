@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    { "id": "var_decl", "type": "VarDecl", "props": { "varName": "counter", "varType": "int", "initialValue": 0 } },
+    { "id": "lit_one", "type": "Literal", "props": { "value": 1 } },
+    { "id": "lit_limit", "type": "Literal", "props": { "value": 3 } },
+
+    { "id": "var_get_cond", "type": "VarGet", "props": { "varName": "counter" } },
+    { "id": "less", "type": "LessThan" },
+    { "id": "while1", "type": "While" },
+
+    { "id": "var_get_body", "type": "VarGet", "props": { "varName": "counter" } },
+    { "id": "p_print", "type": "Print" },
+    { "id": "add", "type": "Add" },
+    { "id": "var_set", "type": "VarSet", "props": { "varName": "counter" } }
+  ],
+  "edges": [
+    { "from": "var_get_cond", "to": "less", "kind": "data" },
+    { "from": "lit_limit", "to": "less", "kind": "data" },
+    { "from": "less", "to": "while1", "kind": "data" },
+
+    { "from": "while1", "to": "p_print", "kind": "control" },
+    { "from": "p_print", "to": "add", "kind": "control" },
+    { "from": "add", "to": "var_set", "kind": "control" },
+
+    { "from": "var_get_body", "to": "p_print", "kind": "data" },
+    { "from": "var_get_body", "to": "add", "kind": "data" },
+    { "from": "lit_one", "to": "add", "kind": "data" },
+    { "from": "add", "to": "var_set", "kind": "data" }
+  ],
+  "imports": ["<iostream>"]
+}

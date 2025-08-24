@@ -1,0 +1,96 @@
+{
+  "Literal": {
+    "category": "value",
+    "outputs": [{"name": "value", "type": "number"}],
+    "properties": [{"name":"value","type":"number"}]
+  },
+  "Param": {
+    "category": "value",
+    "outputs": [{"name": "value", "type": "number"}],
+    "properties": [{"name":"name","type":"string"}]
+  },
+  "Return": {
+    "category": "control",
+    "inputs": [{"name":"value","type":"any"}],
+    "outputs": []
+  },
+  "Add": {
+    "category": "math",
+    "inputs": [{"name":"a","type":"number"},{"name":"b","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}]
+  },
+  "Sub": {
+    "category": "math",
+    "inputs": [{"name":"a","type":"number"},{"name":"b","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}]
+  },
+  "Mul": {
+    "category": "math",
+    "inputs": [{"name":"a","type":"number"},{"name":"b","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}]
+  },
+  "Div": {
+    "category": "math",
+    "inputs": [{"name":"a","type":"number"},{"name":"b","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}]
+  },
+  "LessThan": {
+    "category": "logic",
+    "inputs": [{"name":"a","type":"number"},{"name":"b","type":"number"}],
+    "outputs": [{"name":"out","type":"bool"}]
+  },
+  "Print": {
+    "category": "io",
+    "inputs": [{"name":"value","type":"any"}],
+    "outputs": []
+  },
+  "Sin": {
+    "category": "external",
+    "inputs": [{"name":"x","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}],
+    "lib": {"name":"sin","include":"<cmath>","signature":"double sin(double)"}
+  },
+  "Cos": {
+    "category": "external",
+    "inputs": [{"name":"x","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}],
+    "lib": {"name":"cos","include":"<cmath>","signature":"double cos(double)"}
+  },
+  "Call": {
+    "category": "control",
+    "inputs": [{"name":"arg0","type":"number"}],
+    "outputs": [{"name":"out","type":"number"}]
+  },
+  "VarDecl": {
+    "category": "vars",
+    "properties": [{"name":"name","type":"string"},{"name":"initialValue","type":"number"}],
+    "outputs": [{"name":"value","type":"number"}]
+  },
+  "VarSet": {
+    "category": "vars",
+    "properties": [{"name":"name","type":"string"}],
+    "inputs": [{"name":"value","type":"number"}],
+    "outputs": []
+  },
+  "VarGet": {
+    "category": "vars",
+    "properties": [{"name":"name","type":"string"}],
+    "outputs": [{"name":"value","type":"number"}]
+  },
+  "If": {
+    "category": "control",
+    "inputs": [{"name":"cond","type":"bool"}],
+    "outputs": []
+  },
+  "While": {
+    "category": "control",
+    "inputs": [{"name":"cond","type":"bool"}],
+    "outputs": []
+  },
+  "Cast": {
+    "category": "util",
+    "properties": [{"name":"targetType","type":"string"}],
+    "inputs": [{"name":"in","type":"any"}],
+    "outputs": [{"name":"out","type":"any"}]
+  }
+}

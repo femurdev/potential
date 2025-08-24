@@ -1,0 +1,29 @@
+{
+  "function_call.graph": {
+    "validator": "Validation failed:\n - Print node print1 references unknown or untyped input call1",
+    "emitter_err": "Wrote node->symbol map to /Users/femurdev/Desktop/potential/function_call.graph.cpp.map.json\n",
+    "emitted_head": "#include <iostream>\n\nusing namespace std;\n\nint addTwo(int a, int b) {\n    // node:arg_a\n    auto addTwo_v_arg_a = addTwo_v_arg_a;\n    // node:arg_b\n    auto addTwo_v_arg_b = addTwo_v_arg_b;\n    // node:add\n    double addTwo_v_add = addTwo_v_arg_a + addTwo_v_arg_b;\n    // node:ret\n    return addTwo_v_add;\n    return (int)0;\n}\n\nint main() {\n    // node:c1\n    int v_c1 = 5;\n    // node:c2\n    int v_c2 = 7;\n    // node:call1\n    auto v_call1 = addTwo(v_c1, v_c2);\n    // node:print1\n    std::cout << v_call1 << std::endl;\n    return 0;\n}",
+    "compile_err": "tmp_out_function_call.graph.cpp:7:27: error: variable 'addTwo_v_arg_a' declared with deduced type 'auto' cannot appear in its own initializer\n    7 |     auto addTwo_v_arg_a = addTwo_v_arg_a;\n      |                           ^\ntmp_out_function_call.graph.cpp:9:27: error: variable 'addTwo_v_arg_b' declared with deduced type 'auto' cannot appear in its own initializer\n    9 |     auto addTwo_v_arg_b = addTwo_v_arg_b;\n      |                           ^\n2 errors generated.\n",
+    "run_stdout": "",
+    "run_stderr": "",
+    "status": "compile_failed"
+  },
+  "function_simple": {
+    "validator": "Validation OK",
+    "emitter_err": "Wrote node->symbol map to /Users/femurdev/Desktop/potential/function_simple.cpp.map.json\n",
+    "emitted_head": "#include <iostream>\n\nusing namespace std;\n\nvoid getAnswer() {\n    // node:f_lit\n    int getAnswer_v_f_lit = 42;\n    // node:f_ret\n    return getAnswer_v_f_lit;\n    return (void)0;\n}\n\nint main() {\n    // node:call1\n    auto v_call1 = getAnswer();\n    // node:lit1\n    int v_lit1 = 42;\n    // node:p1\n    std::cout << v_call1 << std::endl;\n    // node:ret1\n    return v_lit1;\n    return 0;\n}",
+    "compile_err": "tmp_out_function_simple.cpp:9:5: error: void function 'getAnswer' should not return a value [-Wreturn-mismatch]\n    9 |     return getAnswer_v_f_lit;\n      |     ^      ~~~~~~~~~~~~~~~~~\ntmp_out_function_simple.cpp:15:10: error: variable has incomplete type 'void'\n   15 |     auto v_call1 = getAnswer();\n      |          ^\n2 errors generated.\n",
+    "run_stdout": "",
+    "run_stderr": "",
+    "status": "compile_failed"
+  },
+  "while_counter": {
+    "validator": "Validation OK",
+    "emitter_err": "Wrote node->symbol map to /Users/femurdev/Desktop/potential/while_counter.cpp.map.json\n",
+    "emitted_head": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    // Warning: data dependency cycle detected, emitting in source order\n    // node:var_decl\n    int var_counter = 0;\n    // node:lit_one\n    int v_lit_one = 1;\n    // node:lit_limit\n    int v_lit_limit = 3;\n    // node:var_get_cond\n    auto v_var_get_cond = var_counter;\n    // node:less\n    bool v_less = v_var_get_cond < v_lit_limit;\n    // node:while1\n    // Unhandled node type in graph: While (id=while1)\n    // node:var_get_body\n    auto v_var_get_body = var_counter;\n    while (v_less) {\n    // node:add\n    double v_add = v_var_get_body + v_lit_one;\n    // node:p_print\n    std::cout << v_var_get_body << std::endl;\n    // node:var_set\n    var_counter = v_add;\n    }\n    return 0;\n}",
+    "compile_err": "",
+    "run_stdout": "",
+    "run_stderr": "Timed out",
+    "status": "timeout"
+  }
+}

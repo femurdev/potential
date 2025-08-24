@@ -1,0 +1,28 @@
+{
+  "mappings": [
+    {
+      "node_id": "n1",
+      "function": null,
+      "start_line": 4,
+      "end_line": 4
+    },
+    {
+      "node_id": "n2",
+      "function": null,
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "node_id": "n3",
+      "function": null,
+      "start_line": 6,
+      "end_line": 6
+    },
+    {
+      "node_id": "n4",
+      "function": null,
+      "start_line": 7,
+      "end_line": 7
+    }
+  ]
+}

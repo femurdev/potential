@@ -1,0 +1,2 @@
+Skipping plugin plugin.schema.json:  must have required property 'name'
+Wrote node->symbol map to /Users/femurdev/Desktop/potential/hello_world.cpp.map.json

@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import * as fs from "fs";
 import * as path from "path";
 import { validatePluginWithAjv } from "./pluginValidator";
 import { validateGraph } from "../validator/graphValidator";
@@ -386,7 +385,18 @@ function loadPlugins(pluginDir: string) {
     try {
       const raw = fs.readFileSync(path.join(pluginDir, f), 'utf8');
       const p = JSON.parse(raw);
-      const valid = validatePluginManifest(p);
+      const ajvRes = validatePluginWithAjv(p);
+      let valid: { ok: boolean; message?: string } = { ok: false };
+      if (ajvRes.ok) {
+        valid = { ok: true };
+      } else {
+        // If AJV isn't available or schema file missing, fall back to ad-hoc validator
+        if (ajvRes.message && ajvRes.message !== 'ajv not available' && ajvRes.message !== 'Plugin schema not found') {
+          valid = { ok: false, message: ajvRes.message };
+        } else {
+          valid = validatePluginManifest(p);
+        }
+      }
       if (!valid.ok) {
         console.error(`Skipping invalid plugin ${f}: ${valid.message}`);
         continue;
@@ -595,58 +605,60 @@ export function emitCppForGraph(graph: GraphIR, pluginDir = 'plugins'): { code: 
   emitGraphIntoContext(graph, mainCtx, pluginDir);
   for (const inc of mainCtx.includes) globalIncludes.add(inc);
 
-  // Build final lines array with includes, prototypes, function bodies, then main
-  const finalLines: string[] = [];
-  for (const inc of Array.from(globalIncludes)) finalLines.push(`#include ${inc}`);
-  finalLines.push('');
+  // Build final lines via a streaming writer that also records absolute node line mappings
+  class LineWriter {
+    lines: string[] = [];
+    currentLine = 0; // 1-based
+    map: Record<string, { startLine: number; endLine: number }> = {};
+    lastNodeId: string | null = null;
+    write(line: string) {
+      this.lines.push(line);
+      this.currentLine += 1;
+      const m = line.match(/^\s*\/\/ node:(\S+)/);
+      if (m) {
+        const id = m[1];
+        this.map[id] = { startLine: this.currentLine, endLine: this.currentLine };
+        this.lastNodeId = id;
+      } else {
+        if (this.lastNodeId) {
+          const info = this.map[this.lastNodeId];
+          if (info) info.endLine = this.currentLine;
+        }
+      }
+    }
+    getCode() { return this.lines.join('\n'); }
+    getMap() { return this.map; }
+  }
+
+  const writer = new LineWriter();
+
+  // Write includes
+  for (const inc of Array.from(globalIncludes)) writer.write(`#include ${inc}`);
+  writer.write('');
 
   // Emit prototypes
+  for (const fd of functionsData) writer.write(`${fd.signature};`);
+  if (functionsData.length > 0) writer.write('');
+
+  // Emit function bodies using per-function ctx.bodyLines; node comments are already present in those bodyLines
   for (const fd of functionsData) {
-    finalLines.push(`${fd.signature};`);
-  }
-  if (functionsData.length > 0) finalLines.push('');
-
-  // Emit function bodies and record mapping using fd.ctx.nodeLineMap which is relative to fd.ctx.bodyLines
-  const map: Record<string, { startLine: number; endLine: number }> = {};
-  for (const fd of functionsData) {
-    // signature line
-    finalLines.push(`${fd.signature} {`);
-    const bodyStartLine = finalLines.length + 1; // first body line will be this index (1-based)
-    // add body lines (with indentation)
-    for (const bl of fd.ctx.bodyLines) {
-      finalLines.push('  ' + bl);
+    writer.write(`${fd.signature} {`);
+    for (const bl of fd.ctx.bodyLines) writer.write('  ' + bl);
+    if (!fd.ctx.bodyLines.some((l: string) => l.trim().startsWith('return'))) {
+      if (!/^void\b/.test(fd.signature)) writer.write('  return 0;');
     }
-    // ensure return if no return found and function non-void
-    if (!fd.ctx.bodyLines.some((l) => l.trim().startsWith('return'))) {
-      if (!/^void\b/.test(fd.signature)) finalLines.push('  return 0;');
-    }
-    finalLines.push('}');
-    finalLines.push('');
-
-    // map nodes
-    for (const [nodeId, rng] of fd.ctx.nodeLineMap.entries()) {
-      // rng.startLine is 1-based within fd.ctx.bodyLines; map to finalLines absolute numbering
-      const absStart = bodyStartLine + (rng.startLine - 1);
-      const absEnd = bodyStartLine + (rng.endLine - 1);
-      map[nodeId] = { startLine: absStart, endLine: absEnd };
-    }
+    writer.write('}');
+    writer.write('');
   }
 
-  // Emit main function
-  finalLines.push('int main() {');
-  const mainBodyStart = finalLines.length + 1;
-  for (const l of mainCtx.bodyLines) finalLines.push('  ' + l);
-  if (!mainCtx.bodyLines.some((l) => l.trim().startsWith('return'))) finalLines.push('  return 0;');
-  finalLines.push('}');
+  // Emit main
+  writer.write('int main() {');
+  for (const l of mainCtx.bodyLines) writer.write('  ' + l);
+  if (!mainCtx.bodyLines.some((l: string) => l.trim().startsWith('return'))) writer.write('  return 0;');
+  writer.write('}');
 
-  // Map main nodes
-  for (const [nodeId, rng] of mainCtx.nodeLineMap.entries()) {
-    const absStart = mainBodyStart + (rng.startLine - 1);
-    const absEnd = mainBodyStart + (rng.endLine - 1);
-    map[nodeId] = { startLine: absStart, endLine: absEnd };
-  }
-
-  const code = finalLines.join('\n');
+  const code = writer.getCode();
+  const map = writer.getMap();
   return { code, map };
 }
 

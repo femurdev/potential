@@ -1,14 +1,16 @@
 #include <iostream>
 
-int main() {
+using namespace std;
 
-  return 0;
+int getAnswer() {
+    double getAnswer_v_f_lit = 42;
+    return getAnswer_v_f_lit;
 }
 
 int main() {
-  auto const_1 = 3;
-  auto const_2 = 4;
-  auto add_3 = (const_1) + (const_2);
-  std::cout << add_3 << std::endl;
-  return 0;
+    double v_lit1 = 42;
+    int v_call1 = getAnswer();
+    std::cout << v_call1 << std::endl;
+    return 0;
 }
+

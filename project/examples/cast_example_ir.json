@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {"id": "l_str", "type": "Literal", "properties": {"value": "42"}},
+    {"id": "l_num", "type": "Literal", "properties": {"value": 1}},
+    {"id": "add1", "type": "Add"}
+  ],
+  "edges": [
+    {"from": "l_str", "to": "add1", "toPort": "a"},
+    {"from": "l_num", "to": "add1", "toPort": "b"}
+  ],
+  "imports": []
+}

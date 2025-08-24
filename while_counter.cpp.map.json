@@ -1,0 +1,12 @@
+{
+  "var_decl": "v_var_decl",
+  "lit_one": "v_lit_one",
+  "lit_limit": "v_lit_limit",
+  "var_get_cond": "v_var_get_cond",
+  "less": "v_less",
+  "while1": "v_while1",
+  "var_get_body": "v_var_get_body",
+  "p_print": "v_p_print",
+  "add": "v_add",
+  "var_set": "v_var_set"
+}

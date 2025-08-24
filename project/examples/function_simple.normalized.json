@@ -1,0 +1,85 @@
+{
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "Literal",
+      "properties": {
+        "value": 10
+      },
+      "outputs": [
+        "n2"
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "Call",
+      "properties": {
+        "name": "addOne"
+      },
+      "inputs": [
+        "n1"
+      ],
+      "outputs": [
+        "n3"
+      ]
+    },
+    {
+      "id": "n3",
+      "type": "Print",
+      "inputs": [
+        "n2"
+      ],
+      "outputs": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "n1",
+      "to": "n2"
+    },
+    {
+      "from": "n2",
+      "to": "n3"
+    }
+  ],
+  "imports": [],
+  "functions": [
+    {
+      "name": "addOne",
+      "params": [
+        {
+          "name": "x",
+          "type": "number"
+        }
+      ],
+      "returnType": "number",
+      "graph": {
+        "nodes": [
+          {
+            "id": "p_x",
+            "type": "Param",
+            "properties": {
+              "name": "x"
+            }
+          },
+          {
+            "id": "literal1",
+            "type": "Literal",
+            "properties": {
+              "value": 1
+            }
+          },
+          {
+            "id": "n_add",
+            "type": "Add",
+            "inputs": [
+              "p_x",
+              "literal1"
+            ]
+          }
+        ],
+        "return": "n_add"
+      }
+    }
+  ]
+}

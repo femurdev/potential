@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Graph IR Schema",
+  "type": "object",
+  "required": ["nodes"],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "label": { "type": "string" },
+          "inputs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "IDs of nodes or ports that feed into this node"
+          },
+          "outputs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "IDs of nodes or ports that this node feeds into"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Node-specific properties (e.g., literal value, variable name, format)"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "fromPort": { "type": "string" },
+          "toPort": { "type": "string" }
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "graph"],
+        "properties": {
+          "name": { "type": "string" },
+          "params": {
+            "type": "array",
+            "items": { "type": "object", "required": ["name", "type"], "properties": { "name": {"type":"string"}, "type": {"type":"string"} } }
+          },
+          "returnType": { "type": "string" },
+          "graph": { "type": "object" }
+        }
+      }
+    },
+    "imports": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata such as author, version"
+    }
+  }
+}

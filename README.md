@@ -1,39 +1,59 @@
-Graph-to-C++ (node-and-graph visual language)
+Graph-Blocks — Visual Node-and-Graph Programming to C++
 
 Overview
-This project provides a visual node-and-graph-based programming environment that compiles JSON-serialized graphs to C++. It includes:
-- An IR JSON schema (in-code)
-- A TypeScript CppEmitter that converts the IR to C++
-- A Validator for simple checks (cycle detection, type mismatches)
-- A JS Runner to execute graphs for quick testing
-- A plugin mechanism to wrap external C++ functions (plugins/*.json)
-- A minimal frontend skeleton (React) for building graphs and exporting JSON
 
-Quick start
-1) Install dev deps:
-   npm install
-2) Build TypeScript:
-   npm run build
-3) Emit C++ from example graph:
-   npm run emit
-   (this generates out.cpp from examples/add.graph.json)
-4) Compile & run the generated C++:
-   g++ -std=c++17 out.cpp -o out && ./out
+Graph-Blocks is a visual programming environment that lets users build programs by connecting nodes in a graph. The graph serializes to a JSON IR, which the compiler core (validator + CppEmitter) translates to compilable C++.
 
-Run JS runner (fast preview without C++):
-   npm run run-js
+Key features
+- Visual graph editor (React/TypeScript) with a node palette and drag-and-drop wiring.
+- Graph IR (JSON) with nodes, edges (with optional fromPort/toPort), functions (subgraphs), and imports.
+- Compiler core: validator (topological sort, type checks) and CppEmitter (emits C++ with includes and functions).
+- Node defs include external library metadata to auto-insert #includes and map node calls to library functions.
+- Two execution modes: sandboxed server compile (Docker) and client-side JS preview runner (quick feedback).
+- Diagnostics mapping: emitter produces mapping entries that map nodes/ports to emitted C++ line/column ranges so compiler errors can be shown on the visual graph.
 
-Validate graph:
-   npm run validate
+Quickstart (developer)
 
-Extending
-- Add node emitters in src/emitter/cppEmitter.ts: add functions to NODE_EMITTERS for new node types.
-- Add validator rules in src/validator/graphValidator.ts.
-- Add plugins as JSON files in plugins/*.json, they are auto-loaded by the emitter.
+Prereqs
+- Python 3.10+ (use python3)
+- Node.js & npm (for frontend dev)
+- Docker (for sandboxed compilation)
 
-Next steps
-- Implement richer control-flow translation (loop nodes -> while/for translation)
-- Implement function/subgraph -> C++ function generation
-- Integrate a full graph editor UI (react-flow) with drag/drop and wiring
-- Add a server-side sandbox or Emscripten-based client-side compilation
+Build the sandbox image
+  python3 -m pip install --upgrade pip
+  docker build -t graph-compiler-sandbox -f docker/sandbox/Dockerfile .
 
+Run the compile service (dev)
+  python3 project/scripts/compile_service.py
+
+Start the frontend (in another terminal)
+  cd project/frontend
+  npm install
+  npm start
+
+Emit & compile a sample IR locally (no Docker required)
+  python3 project/scripts/emit_and_compile.py project/examples/sum_ir.json
+
+Run CI-like integration tests (requires Docker)
+  python3 project/scripts/ci_run_tests.py
+
+Files & important locations
+- project/frontend/src — React editor and GraphSerializer
+- project/compiler/node_defs.json — node metadata and external library info
+- project/compiler/validator.py — IR validator and type checks
+- project/compiler/cpp_emitter.py — C++ emitter and mapping logic
+- project/scripts/emit_and_compile.py — helper CLI: normalize IR, emit, compile with g++
+- project/scripts/compile_service.py — Flask compile API; prefers Docker sandbox
+- docker/sandbox/* — sandbox Dockerfile and seccomp profile
+- project/examples/* — sample IRs
+
+Documentation
+- docs/host_setup.md — host/operator guide
+- docs/end_user.md — quick user guide for the editor
+- docs/plugin_author.md — how to add external nodes / plugins
+
+Security note
+Do NOT expose the compile service to untrusted networks without authentication, quotas, and a hardened sandbox. See docs/host_setup.md for recommendations.
+
+License & contribution
+This project is provided for demo/educational use. Check LICENSE file in the repo root for terms. Contributions welcome—open a PR with tests and documentation updates.

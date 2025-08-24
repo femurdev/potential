@@ -1,160 +1,76 @@
-Graph-to-C++ — Host & End-User Guide
+User Guide — NodeGraphCPP
 
 Overview
+NodeGraphCPP is a visual, node-and-graph-based programming environment that compiles visual graphs into C++ and (optionally) runs them in a sandbox or as WebAssembly. This guide helps end users build simple programs, save/load graphs, and run them locally using the included tooling.
 
-This repository implements a visual node-and-graph-based programming system that serializes graphs as JSON IR and emits compilable C++.
+Quick Start (Hello World)
+1. Open the Graph Editor (frontend) and create nodes:
+   - Add a Literal node with value: "Hello, World!"
+   - Add a Print node.
+   - Connect Literal -> Print with a data edge.
+2. Save the graph to JSON (File → Export) as examples/hello_world.json.
+3. Validate the IR (requires Node.js):
+   node compiler/validator.js examples/hello_world.json
 
-There are two audiences for this guide:
-- Host / developer: people who run or extend the system (setup, build, add plugins, run compilers or backends).
-- End user: people who author graphs with the UI or by hand and want to emit/compile/run C++.
+4. Emit C++:
+   node compiler/cpp_emitter.js examples/hello_world.json > out_hello.cpp
 
-Quick repository layout
+5. Compile & run (native):
+   g++ out_hello.cpp -std=c++17 -O2 -o out_hello && ./out_hello
 
-- docs/: documentation and the IR schema (IR_SCHEMA.md)
-- examples/: example graph JSONs (hello_world.graph.json, add.graph.json, function.graph.json, ...)
-- plugins/: JSON manifests that map nodes to external C++ functions (e.g., sin.json)
-- scripts/: small JS emitters and helper scripts for prototyping (emit_simple.js, emit_with_functions.js, compile_and_map.js)
-- src/emitter/: TypeScript CppEmitter (src/emitter/cppEmitter.ts) — primary emitter implementation
-- src/validator/: graph validator (cycle detection, type checks)
-- src/runner/: JS runner to execute graphs in JS for quick preview
-- frontend/: React UI skeleton (components for NodePalette and GraphEditor)
+6. (Optional) Use the test harness (Python 3) to run emit+compile for an example:
+   python3 scripts/test_emit_compile.py examples/hello_world.json
 
-Requirements
+IR basics (for authors)
+- Top-level object keys:
+  - nodes: array of node objects { id, type, props?, inputs?, outputs? }
+  - edges: array of edges { from, to, fromPort?, toPort?, kind?: 'data'|'control' }
+  - functions: array of function definitions { name, signature?, graph }
+  - imports: optional list of C++ includes to inject
 
-- Node.js (>=14) and npm
-- A C++ toolchain (g++ or clang++) for server-side compilation
-- Optionally: Emscripten if you want to build a WASM execution pipeline
+- Recommended node fields:
+  - id (string): unique node identifier (use short stable ids, e.g. n1)
+  - type (string): node type name (Add, Literal, Print, VarDecl, If, While, Call, ...)
+  - props (object): node-specific configuration (e.g., for Literal: { value: 42 })
+  - inputs/outputs (optional): arrays describing named ports when needed
 
-Host / Developer: Setup & Common Tasks
+Edge kinds
+- data (default): carries values from producer nodes to consumer nodes.
+- control: orders execution and sequences side-effects (Print, VarSet).
 
-1) Install dependencies
-
-  npm install
-
-2) Build TypeScript sources
-
-  npm run build
-
-3) Emit C++ using the compiled emitter (dist)
-
-  npm run emit
-
-This runs the emitter on examples/add.graph.json and writes out.cpp. You can override by running the emitter script directly with a graph file.
-
-4) Emit using the prototype scripts (quick)
-
-For quick testing you can use the JS prototype emitter which does not require building the TS sources:
-
-  node scripts/emit_simple.js examples/hello_world.graph.json out_hello.cpp
-  node scripts/emit_simple.js examples/add.graph.json out_add.cpp
-  node scripts/emit_with_functions.js examples/function.graph.json out_func.cpp
-
-5) Compile the generated C++
-
-  g++ -std=c++17 out_add.cpp -o out_add && ./out_add
-
-There is a helper script that will compile and map compiler errors back to node ids using a JSON map when available (scripts/compile_and_map.js). The TypeScript emitter produces a map for nodes when used; the simple prototype scripts do not.
-
-Using the JS Runner (fast preview)
-
-The JS runner executes graph logic inside Node.js (no C++). This is useful for validating logic and types before emitting C++.
-
-  npm run run-js
-
-This invokes dist/runner/jsRunner.js on examples/add.graph.json. The runner supports a subset of the node types.
-
-End User: Authoring Graphs
-
-1) Use the frontend (React)
-
-The frontend folder contains a minimal GraphEditor and NodePalette components. The UI is a starting point — to run it locally:
-
-  cd frontend
-  npm install
-  npm start
-
-The editor supports:
-- Drag & drop of nodes (palette provided)
-- Wiring inputs/outputs
-- Exporting the graph to JSON
-- Importing example graphs from examples/
-
-2) Graph IR (summary)
-
-Read docs/IR_SCHEMA.md for the full schema. Minimal example (hello world):
-
+Example IR
 {
-  "meta": { "name": "hello-world" },
   "nodes": [
-    {
-      "id": "print1",
-      "type": "Print",
-      "inputs": [{ "name": "text", "type": "string" }],
-      "params": { "text": "Hello World" }
-    }
+    { "id": "n1", "type": "Literal", "props": { "value": "Hello, World!" } },
+    { "id": "n2", "type": "Print" }
   ],
-  "edges": []
+  "edges": [
+    { "from": "n1", "to": "n2", "kind": "data" }
+  ],
+  "imports": ["<iostream>"]
 }
 
-3) Emitting and running
+Using the Graph Runner for quick preview
+- scripts/js_graph_runner.js evaluates many graphs directly in Node without generating C++.
+- Useful for fast iteration; it supports Literal, Add/Sub/Mul/Div, LessThan, VarDecl, VarSet, VarGet, Print, If, While (best-effort).
+- Run:
+  node scripts/js_graph_runner.js examples/hello_world.json
 
-- Export the graph JSON from the UI or edit by hand (examples/ contains samples).
-- Run the emitter (scripts or compiled TS emitter) to produce a .cpp file.
-- Compile the .cpp with g++ and run the produced binary.
+Plugins and external libraries
+- External C++ functions are represented by plugin manifests in the plugins/ folder.
+- Plugins supply: nodeType or name, include (e.g. "<cmath>"), function name and signature.
+- The emitter will auto-insert #include lines for used plugins. On hosted systems only admin-approved plugins should be allowed.
 
-Plugins / External Libraries
+Troubleshooting
+- Validation fails: run the validator and fix missing node ids, unknown references, or port mismatches.
+- Emitter crashes: check emitter stderr (node compiler/cpp_emitter.js ...) and report the node id reported in comments in the generated C++.
+- Compilation errors: inspect the generated C++ for missing includes or mismatched types; use the mapping JSON (examples/<ir>.cpp.map.json) to find the source node.
 
-Plugins allow node types to wrap external C++ functions and automatically add includes. Place plugin JSON manifests in plugins/; they are auto-loaded by the TypeScript emitter.
+Next steps for users
+- Learn to use named ports when working with functions that have multiple parameters.
+- Use control edges to sequence Print and other side-effects.
+- Explore examples in the examples/ directory: function_simple.json, if_example.json, while_counter.json.
 
-Example plugin (plugins/sin.json):
-{
-  "name": "sin",
-  "nodeType": "Lib_sin",
-  "include": "<cmath>",
-  "signature": "double sin(double)",
-  "params": [ { "name": "x", "type": "double", "kind": "input" } ],
-  "returns": { "type": "double" }
-}
-
-To use the plugin, add a node of type "Lib_sin" in your graph and connect an input. The emitter will insert #include <cmath> and generate a call sin(arg).
-
-Extending the system (developers)
-
-- Add node emitters: modify src/emitter/cppEmitter.ts and provide an emitter function in NODE_EMITTERS for the new node type. The emitter API provides EmitterContext (includes, bodyLines, symbolTable).
-- Add plugins: drop JSON manifests into plugins/. The emitter's plugin loader will auto-register node emitters for those plugins.
-- Improve validator: add rules in src/validator/graphValidator.ts (type checks, signatures, cycle detection exceptions for valid loops).
-- Implement the backend compiler service (see Execution Backends below).
-
-Execution Backends
-
-Two main options:
-1) Server-side sandbox: run g++/clang++ inside a sandbox (Docker container or restricted environment). Expose an API:
-   POST /compile -> accepts graph.json, returns compilation result and/or binary (or run output). Use compile_and_map.js for error mapping.
-2) Client-side WASM: use Emscripten to compile generated C++ to WebAssembly in the browser. This avoids sending source to the server but requires shipping Emscripten or using a server to compile to WASM and returning the .wasm module.
-
-Security note: compiling arbitrary C++ is dangerous; always sandbox and limit resources (time, memory, filesystem) when exposing compilation.
-
-Debugging & Mapping
-
-- The TypeScript emitter can produce a node->generated-lines mapping (source map like) so compilation errors can be translated back to nodes. Use scripts/compile_and_map.js to demonstrate mapping.
-- The JS Runner can be used for step-through debugging: extend src/runner/jsRunner.ts to provide trace logs per-node.
-
-Roadmap / Next Steps
-
-Priority items:
-- Integrate ui with emitter for live preview & validation.
-- Implement formal JSON Schema for the IR and enforce via validator.
-- Implement function/subgraph emission with proper signatures and return mapping in the TypeScript emitter.
-- Implement server-side sandbox or Emscripten pipeline for execution.
-- Add optimizer passes (constant folding, dead code elimination).
-
-Contributing
-
-- Fork the repo, implement changes, and open PRs.
-- Add tests (examples + expected generated C++ behavior) where possible.
-
-Support
-
-If you hit issues using the emitter or runner, check examples/ for working graphs and the scripts/ emitters for small, easy-to-follow implementations.
-
+Safety note (when running compiled code)
+- If you compile and run user-generated code on a server, always run the compilation and execution inside a sandbox/container with resource limits and no network access. See docs/host_setup.md for guidance on safe hosting.
 

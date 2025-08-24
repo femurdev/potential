@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    { "id": "lit1", "type": "Literal", "props": { "value": 42 } },
+    { "id": "ret1", "type": "Return" },
+    { "id": "call1", "type": "Call", "props": { "functionName": "getAnswer", "returnType": "int" } },
+    { "id": "p1", "type": "Print" }
+  ],
+  "edges": [
+    { "from": "lit1", "to": "ret1" },
+    { "from": "call1", "to": "p1" }
+  ],
+  "functions": [
+    {
+      "name": "getAnswer",
+      "signature": "int getAnswer()",
+      "graph": {
+        "nodes": [
+          { "id": "f_lit", "type": "Literal", "props": { "value": 42 } },
+          { "id": "f_ret", "type": "Return" }
+        ],
+        "edges": [
+          { "from": "f_lit", "to": "f_ret" }
+        ]
+      }
+    }
+  ],
+  "imports": ["<iostream>"]
+}

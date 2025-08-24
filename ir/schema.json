@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Node Graph IR",
+  "type": "object",
+  "required": ["nodes", "edges"],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "label": { "type": "string" },
+          "props": { "type": "object" },
+          "inputs": { "type": "array", "items": { "type": "string" } },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "position": { "type": "object", "properties": { "x": { "type": "number" }, "y": { "type": "number" } } }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "fromPort": { "type": "string" },
+          "toPort": { "type": "string" },
+          "kind": { "type": "string", "enum": ["data", "control"], "default": "data" }
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "graph"],
+        "properties": {
+          "name": { "type": "string" },
+          "signature": { "type": "string" },
+          "graph": { "$ref": "#" }
+        }
+      }
+    },
+    "imports": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

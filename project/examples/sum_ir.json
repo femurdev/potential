@@ -1,0 +1,10 @@
+{
+  "nodes": [
+    { "id": "n1", "type": "Literal", "properties": { "value": 3 } },
+    { "id": "n2", "type": "Literal", "properties": { "value": 4 } },
+    { "id": "n3", "type": "Add", "inputs": ["n1", "n2"] },
+    { "id": "n4", "type": "Print", "inputs": ["n3"] }
+  ],
+  "edges": [],
+  "imports": []
+}

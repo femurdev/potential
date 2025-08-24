@@ -1,0 +1,20 @@
+{
+  "Print": {
+    "include": "<iostream>",
+    "function": "Print",
+    "returnType": "void",
+    "params": [ { "name": "text", "type": "std::string", "kind": "input" } ]
+  },
+  "sin": {
+    "include": "<cmath>",
+    "function": "sin",
+    "returnType": "double",
+    "params": [ { "name": "x", "type": "double", "kind": "input" } ]
+  },
+  "cos": {
+    "include": "<cmath>",
+    "function": "cos",
+    "returnType": "double",
+    "params": [ { "name": "x", "type": "double", "kind": "input" } ]
+  }
+}

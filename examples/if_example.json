@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    { "id": "lit_cond", "type": "Literal", "props": { "value": true } },
+    { "id": "if1", "type": "If", "outputs": [{ "name": "then" }, { "name": "else" }] },
+    { "id": "p_then", "type": "Print", "props": { "text": "Then branch" } },
+    { "id": "p_else", "type": "Print", "props": { "text": "Else branch" } }
+  ],
+  "edges": [
+    { "from": "lit_cond", "to": "if1", "kind": "data" },
+    { "from": "if1", "fromPort": "then", "to": "p_then", "kind": "control" },
+    { "from": "if1", "fromPort": "else", "to": "p_else", "kind": "control" }
+  ],
+  "imports": ["<iostream>"]
+}

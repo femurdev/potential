@@ -1,0 +1,6 @@
+{
+  "lit_cond": "v_lit_cond",
+  "if1": "v_if1",
+  "p_then": "v_p_then",
+  "p_else": "v_p_else"
+}

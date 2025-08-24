@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { NodePalette } from './NodePalette';
 
+// Compile endpoint can be overridden by injecting window.__COMPILE_ENDPOINT at runtime (useful for dev).
+const DEFAULT_COMPILE_ENDPOINT = (window as any).__COMPILE_ENDPOINT || 'http://localhost:8081/compile';
+
 export function GraphEditor() {
   const [nodes, setNodes] = useState<any[]>([]);
   const [edges, setEdges] = useState<any[]>([]);
@@ -25,12 +28,11 @@ export function GraphEditor() {
   }
 
   async function compileAndRun() {
-    // Posts to the prototype compile service at http://localhost:8080/compile
     const graph = { meta: { name: 'from-ui' }, nodes, edges, imports: [] };
     setRunning(true);
     setOutput('');
     try {
-      const res = await fetch('http://localhost:8080/compile', {
+      const res = await fetch(DEFAULT_COMPILE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ graph, emitStyle: 'functions' }),
@@ -55,6 +57,9 @@ export function GraphEditor() {
             {running ? 'Running...' : 'Compile & Run (server)'}
           </button>
         </div>
+        <p style={{ color: '#666', fontSize: 12 }}>
+          Using compile endpoint: {DEFAULT_COMPILE_ENDPOINT}
+        </p>
         <pre style={{ maxHeight: '40vh', overflow: 'auto', background: '#f7f7f7', padding: 8 }}>{JSON.stringify({ nodes, edges }, null, 2)}</pre>
         <h4>Server output</h4>
         <pre style={{ maxHeight: '30vh', overflow: 'auto', background: '#111', color: '#bada55', padding: 8 }}>{output}</pre>
