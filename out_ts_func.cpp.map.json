@@ -1,0 +1,34 @@
+{
+  "arg_a": {
+    "startLine": 6,
+    "endLine": 6
+  },
+  "arg_b": {
+    "startLine": 7,
+    "endLine": 7
+  },
+  "add": {
+    "startLine": 8,
+    "endLine": 9
+  },
+  "ret": {
+    "startLine": 10,
+    "endLine": 11
+  },
+  "c1": {
+    "startLine": 15,
+    "endLine": 16
+  },
+  "c2": {
+    "startLine": 17,
+    "endLine": 18
+  },
+  "call1": {
+    "startLine": 19,
+    "endLine": 20
+  },
+  "print1": {
+    "startLine": 21,
+    "endLine": 22
+  }
+}
